@@ -1,0 +1,18 @@
+stages: 
+  - Build
+  - Run
+
+Build code:
+  stage: Build:
+  script: 
+    - make
+  artifacts:  #this is bcoz if we run the code in gitlab it picks different runner for this and then they dont have the binaries to perform the dependent jobs and it is uploaded to gitlab to which we call mystery gitlab box
+    paths:
+      - hello
+
+Nominal Run:
+  stage: Run
+  script:
+    - ./hello
+
+#

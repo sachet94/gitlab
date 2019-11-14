@@ -1,0 +1,44 @@
+# while forking if you get some error of namespace then create a group and then fork the project and then select the required group
+# How to setup ssh key in gitlab:# ssh-keygen# In system copy the key content from the location of .ssh dir from file id_rsa.pub# In gitlab setting>SSh keys and then copy content of rd_rsa.pub to the location
+# Gitlab runner: It is used to run jobs and send results back to gitlab.#  Install it from below link : https://docs.gitlab.com/runner/install/  #Token: Go to gitlab project > settings > CI/CD >  runner > Expand > there we get token.# after token give decription give anything same with TAGS. Then we have to give the exxecutors.# we need to add .gitlab-ci.yml file in the root folder of project repo
+# demo_job: #name of the job it can be anything  
+  # tags:  #In runner we have tags is should match if we want to specific runner to run this job.    
+    - ci   #name of the tag i.e., runner
+    - scripts:       
+       - echo "hello" 
+# push the file to the required repo on gitlab then go to ci/cd, in pipeline check the status
+#stages can be declared using a keyword stages. You can add any number of stages as you require.
+#How to tell the job how to and from where to use image
+stages:
+   - clean
+   - build
+   - test
+   - deploy
+#Lets define a job with for every stage.
+jobCleaning:
+   stage: clean # This tag tells gitlab to run this job only for clean stage
+   script:
+      - echo "Cleaning the code"
+jobBuilding:
+   image: #<reponame:tag>
+   stage: build # This tag tells gitlab to run this job only for build stage
+   script:
+      - echo "Building the code"
+jobTesting:
+   stage: test # This tag tells gitlab to run this job only for test stage
+   script:
+      - echo "Testing the code"
+jobDeploying:
+   stage: deploy # This tag tells gitlab to run this job only for deploy stage
+   script:
+      - echo "Deploying the code"
+
+
+# to add docker with gitlab we need to login using follwoing command:
+# docker login registry.gitlab.com
+# docker build -t registry.gitlab.com/sachet1994/hello .
+# docker push registry.gitlab.com/sachet1994/hello
+# if we want top change the tag name and repo name
+# docker push <the original repo name> <repo to be named:tag>
+# To push the image to the gitlab use command docker push reponame:tagname
+

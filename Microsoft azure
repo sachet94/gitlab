@@ -1,0 +1,102 @@
+Create a virtual machine
+Compute > Create a virtual machine > In basic > Select subscrition > Resource group >  Instance details> VM name> Select region > 
+Slect required Image > Select size > Administrator password and username (Windows login credentials)
+Then allow the port no default port are allowed for ssh or rdp allow the port 
+NEXT
+DISK: 
+Disk option > OS disk type > Select required disk type > Premium SSD/Standard SSD/Standard HDD
+NETWORKING: 
+Virtual network > Select virtual network Remaining let it be.
+MANAGEMENT:
+Let it be as it is.
+Tags: Give tags as required.
+REVIEW AND CREATE : Also get the billing here.
+
+How to capture image of a VM in Azure Portal?
+During the process of capturing the image the server is stopped. After creating the image we need to start the image again.
+A virtual machine > select the vm whos images to be capturedSelect capture > 
+To find the image: Services > Images 
+To create server using the created image: Select image and tap on create VM
+
+How to Attach extra disk to VM in Azure?
+Select vm > Left side disk> add data disk > LUN (no. of disks to be created)> In NAME we can select either available disk orelse create a new disk. > TAp on create. and Then save.
+In a subnet 5 ips are not useable the are saved for passive use.
+1 for network
+2 for default gateway
+3,4 for DNS
+5 for broadcast
+
+Subnet is something that breaks the network in small part
+
+NIC IN Azure acts as Internet gateway IN AWS
+
+How to create Azure Virtual Network?
+All Services > Virtual Network > Add/Create virtual network > Name(Name of your vitual network) > Address space (the VPC cidr block) > Subscrition > Resource group (Create a new) > Location >
+In Subnet > Name > Address range (The cidr block for subnet) > Ddos Protection basic > Service endpoint disabled > firewall disabled > Then create. 
+
+How to established a connection between two VM ?
+All Services : Virtual machine> Create virtual machine > Resource group > vnet-rg (created) > name > region (Where you have created the virtual network)> availability optons (no)>
+credentials (Windows) > port > IN NETWORKING > Virtual Network (The one we created VPC ) > Subnet > Review+create > create.
+Create one more vm for same config
+Try to ping from one vm to another vm it will not work bcoz the windows blocks ICMP port. 
+In windows just turn off windows firewall on boith vms 
+
+Vnet to Vnet Peering in same region.
+Create two virtual network > create two virtual machine > Select the VN > Peering > Add > Name > In virtual network select the VN where we want to peer the connection > Ok.
+Do the same with Other VN.
+Refresh peering it gets connected.
+Still we cannot ping to the VM on other VN (Windows) : Turn off windows firewall.   
+
+Vnet to Vnet Peering in different region
+First we need to create the VN in the required region.
+Then we need to create Virtual network gateway :
+All Services > Virtual network gateway > Create virtual network gateway > Name > Gateway type (VPN)> VPN type (Route-based) > SKU (default) > choose virtual network (If you dont find 
+your location then scroll down and in Location give your reqyuired location)> Public ip Address (Guve name) > CREATE.
+Create the virtual network gateway for other virtual network.
+
+launch the vm in two different virtual network. 
+Go to Virtual Network gateway > Add > Name > Connection type (Vnet to vnet) > First virtual network gateway (From where we need to
+Establish the network) > 2ND virtual network gateway (to where we need to Establish the network) > Shared key (Just a word which should be same in both region gateway) > OK.
+Do the same with other virtual network gateway> First virtual network gateway (From where we need to Establish the network) > 2ND virtual network gateway (to where we need to 
+Establish the network) > Shared key will be same as previous network gateway > OK
+
+
+Azure Load Balancer : 
+Load balancer uses a hash-based algorithm which means it check Source ip, source port, Destination ip, Destination Port, IP protocol. For distribution of inbound flows. 
+Create Virtual 2 machine> During creation > availability set Select availability set > Create new availability set > Name (Load balance set) > OK .
+For 2nd server Give same availability set 
+All service > Load Balancer > Create Load balancer > Name > Type (public)> SKU (basic) > Public ip Address (Create New) > Dynamic > Resource grp > Location should be where the 
+vm is located > Create.
+Open LoadBalancer > Backend pool > Add > Name (BAckend) > Associated (availability set) > Select the availability set created for load balancer > add a Target network ip configuration
+Target virtual machine (Select the Webserver) > Select the ip > For webserver 2 again (add a Target network ip configuration) > Target virtual machine (Select the Webserver) > 
+Select the ip > OK
+
+Health Probes : 
+ADD> Name > Protocol (http=bcoz we need to create it using Internet) > OK
+
+LOAD BALANCING RULES:
+Add > Name > IP Version (IPv4) > Frontend IP Address (LoadbalancerFrontend) > Protocol (TCP) > Port (80) > Backend Pool (backend no. of machine) > Health probe (health HTTP:80)
+Session peristence (None) > Idle timeout (Before idle timeout it will not send the request to other server default it is 4 min) > Floating ip (disabled) > OK   
+
+INTERNAL LOAD BALANCER : 
+Place both in same subnet 
+Create Virtual network: 
+Create Vurtual machine :availability option (availability set) > availability set create new >  Managemnt > Boot diagonostic (off).
+LOAD BALANCER : 
+Create load balancer > Name > type (INTERNAL) > SKU(Basic till 1000 Instance) > Virtual network (In whivh the webserver are present) > Subnet (Same in which the webserver are present)
+IP address (Dynamic) > Resource group > location (VM location) > ok.
+Open LoadBalancer > Backend pool > Add > Name > Associated (availability set) > Select the availability set created for load balancer > add a Target network ip configuration
+Target virtual machine (Select the Webserver) > Select the ip > For webserver 2 again (add a Target network ip configuration) > Target virtual machine (Select the Webserver) > 
+Select the ip > (You dont need to add the 3rd server here) OK 
+
+Health Probes : 
+ADD> Name > Protocol (http) > OK
+
+LOAD BALANCING RULES:
+Add > Name > IP Version (IPv4) > Frontend IP Address (LoadbalancerFrontend) > Protocol (TCP) > Port (80) > Backend Pool (backend no. of machine) > Health probe (health HTTP:80)
+Session peristence (None) > Idle timeout (Before idle timeout it will not send the request to other server default it is 4 min) > Floating ip (disabled) > OK
+
+
+
+
+

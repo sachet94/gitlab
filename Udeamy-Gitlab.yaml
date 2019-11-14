@@ -1,0 +1,189 @@
+#When we make a project, for a stage creating multiple jobs we do it below order
+stages:
+  - build
+  - test
+job1: 
+  stage: build
+  script: 
+    - mkdir sachet
+job2:
+  stage: build
+  script: 
+    - mkdir rambo
+test the car:
+  stage: test
+  script:
+    - ls
+
+# Continuous Integration practice of continuously integrating code changes, ensures that any changes pass all tests, guildlines and code compliance standards.
+# Continuous delivery Ensures that software can be deployed anytime to the production, commonly the latest version is deployed to the respected environment. 
+#install npm and node and then follow gatsbyjs.org/docs/quick-start for installing gatsby.
+# 1) npm install -g gatsby-cli
+# 2) gatsby new gatsby-site
+# 3) cd gatsby-site
+# 4) gatsby develop
+stages:
+  - build
+  - test
+build:
+  stage: build
+  image: node
+  script:
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby build
+artifacts:
+  paths:
+    - public
+
+# Manage secrets in GITLAB Settings>pipeline>Environment variables> Expand> There at first column give Variable to be used in the script and nect to that the credentials.
+# Pre-defined variable for gitlab 
+# how to use it
+stages:
+  - build
+  - test
+build:
+  stage: build
+  image: node
+  script:
+    - echo $CI_COMMIT_SHORT_SHA # the predefined variable is defined here.
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby build
+artifacts:
+  paths:
+    - public
+
+#sed command how we use it sed -i "s/<content present in file>/<content to be replaced>/g" location of the file
+# i = for edit in place
+# s for substitue
+# g for global replacement 
+# content to be replaced is always in "double quotes"
+
+# What is cache it basically stores some data in it from the path that we have given and provides it to further job however it makes the job fast. 
+# Cache is used for temporary storage for project dependencies. we can also place cache just after the stages so that it wil work for all stages.
+# While this feels like it might be safe from accidentally overwriting the cache, it means merge requests get slow first pipelines, which might be a bad developer experience. 
+# The next time a new commit is pushed to the branch, the cache will be re-used. Cache are not used to save build result. It is Temp storage for project dependencies.
+ 
+stages:
+  - build
+  - test
+cache:
+  key:
+  paths:
+    - node_modules/
+build:
+  stage: build
+  image: node
+  script:
+    - echo $CI_COMMIT_SHORT_SHA # the predefined variable is defined here.
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby build
+artifacts:
+  paths:
+    - public
+
+# environment
+stages:
+  - build
+  - test
+cache:
+  key:
+  paths:
+    - node_modules/
+build:
+  stage: build
+  environment:
+    name: Build environment
+    url: link where to be deploy
+  image: node
+  script:
+    - echo $CI_COMMIT_SHORT_SHA # the predefined variable is defined here.
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby build
+artifacts:
+  paths:
+    - public
+
+# Variable in yaml
+# to add global variable
+stages:
+  - build
+  - test
+variables:
+  ins_command: install
+build:
+  stage: build
+  image: node
+  script:
+    - npm $ins_command
+    - npm $ins_command -g gatsby-cli
+    - gatsby build
+
+# Manual triggering of job
+stages:
+  - build
+  - test
+cache:
+  key:
+  paths:
+    - node_modules/
+build code:
+  stage: build
+  image: node
+  when: manual # this job will be triggered manually
+  allow_failure: false # By only adding when it will not stop further stage it will execute the further stage and if we want not the further stage to be executed then we have to add  this line
+  script:
+    - echo $CI_COMMIT_SHORT_SHA # the predefined variable is defined here.
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby build
+artifacts:
+  paths:
+    - public
+
+# When we want the job or stage to be executed only on the commit on master branch the we need to add only in script.
+stages:
+  - build
+  - test
+cache:
+  key:
+  paths:
+    - node_modules/
+build code:
+  stage: build
+  only: 
+    - master #this job will only be excuted only when the commit is for master job
+  image: node
+  script:
+    - echo $CI_COMMIT_SHORT_SHA # the predefined variable is defined here.
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby build
+artifacts:
+  paths:
+    - public
+
+
+# Before script and after script both can be defined global level or for the job level.
+# Before script is a script that is used to run before the normal script block.
+# After script is a script that is used to run after the normal script block.
+stages:
+  - build
+  - test
+  before_script:
+    - echo "I am the one" #example for global level
+build code:
+  stage: build
+  before_script:
+    - echo "First example" # example for job level
+  image: node
+  script:
+    - npm install
+    - npm install -g gatsby-cli
+    - gatsby build
+  after_script:
+    - echo "we  are working at best"
+

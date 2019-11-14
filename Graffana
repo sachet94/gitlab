@@ -1,0 +1,47 @@
+Install Graffana:
+  Add the following to a new file at /etc/yum.repos.d/grafana.repo
+  [grafana]
+name=grafana
+baseurl=https://packages.grafana.com/oss/rpm
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+Run the command:
+sudo yum install grafana
+sudo service grafana-server start
+To configure the Grafana server to start at boot time: sudo /sbin/chkconfig --add grafana-server
+Start the server (via systemd)
+systemctl daemon-reload
+systemctl start grafana-server
+systemctl status grafana-server
+sudo systemctl enable grafana-server.service
+Grafana log will be in :  /var/log/grafana
+Install telegraf : [Centos7]
+wget https://dl.influxdata.com/telegraf/releases/telegraf-1.12.4-1.x86_64.rpm
+sudo yum localinstall telegraf-1.12.4-1.x86_64.rpm
+Install influxdb:
+
+cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
+[influxdb]
+name = InfluxDB Repository - RHEL \$releasever
+baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+enabled = 1
+gpgcheck = 1
+gpgkey = https://repos.influxdata.com/influxdb.key
+EOF
+
+sudo yum install influxdb
+sudo service influxdb start
+sudo yum install influxdb
+sudo systemctl start influxdb
+Create a user:
+# influx 
+# CREATE USER "sachet" WITH PASSWORD 'sachet123' WITH ALL PRIVILEGES
+# exit
+Configure database : 
+# vim /etc/influxdb/influxdb.conf
+/http 
+auth-enabled = true (make this true and uncomment it )
